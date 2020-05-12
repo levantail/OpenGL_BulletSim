@@ -24,13 +24,6 @@ float HelpManager::randomf(float min, float max)
 
 std::vector<glm::vec3> HelpManager::CalculateSides(glm::vec3 origin, glm::vec3 scale, float width, float height)
 {
-	//std::vector<glm::vec3> sides = {
-	//	glm::vec3(origin.x + (width / 2) * scale.x, origin.y + (height / 2) * scale.y, 0.0f),
-	//	glm::vec3(origin.x + (width / 2) * scale.x, origin.y - (height / 2) * scale.y, 0.0f),
-	//	glm::vec3(origin.x - (width / 2) * scale.x, origin.y - (height / 2) * scale.y, 0.0f),
-	//	glm::vec3(origin.x - (width / 2) * scale.x, origin.y + (height / 2) * scale.y, 0.0f)
-	//};
-
 	std::vector<glm::vec3> sides = {
 		glm::vec3(origin.x + (width / 2.0f) , origin.y + (height / 2.0f) , 0.0f),
 		glm::vec3(origin.x + (width / 2.0f) , origin.y - (height / 2.0f) , 0.0f),
@@ -40,12 +33,7 @@ std::vector<glm::vec3> HelpManager::CalculateSides(glm::vec3 origin, glm::vec3 s
 	return sides;
 
 }
-
-
-
-
-
-double HelpManager::EPS = 1E-9;
+float HelpManager::EPS = 1E-9;
 
 inline float HelpManager::det(float a, float b, float c, float d) {
 	return a * d - b * c;
@@ -79,14 +67,8 @@ bool HelpManager::intersect(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec3 d) 
 
 glm::vec3 HelpManager::RotateAroundPoint(glm::vec3 Center, glm::vec3 PointToRotate, float radians)
 {
-	//return glm::vec3(
-	//	glm::cos(radians) * (PointToRotate.x - Center.x) - glm::sin(radians) * (PointToRotate.y - Center.y) + Center.x,
-	//	glm::sin(radians) * (PointToRotate.x - Center.x) + glm::cos(radians) * (PointToRotate.y - Center.y) + Center.y,
-	//	0.0f
-	//	);
-
-	float s = sin(radians);
-	float c = cos(radians);
+	float s = glm::sin(radians);
+	float c = glm::cos(radians);
 
 	// translate point back to origin:
 	PointToRotate.x -= Center.x;

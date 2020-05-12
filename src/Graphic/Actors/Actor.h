@@ -39,7 +39,11 @@ public:
 			glm::vec3 Scale    =	glm::vec3(1.0f,1.0f,1.0f));
 
 	//Called every frame (same as update)
-	virtual void Tick(float DeltaTime) { Draw(); };
+	virtual void Tick(float DeltaTime);
+	//Drawing procedure.
+	virtual void Draw();
+	//Bind resources to memory and prepare for drawing.
+	virtual void Initialize();
 
 	//Event on collision
 	virtual void OnCollisionAABB(Actor actor) {};
@@ -79,14 +83,11 @@ protected:
 	STransform Transform_PrevFrame;
 
 	bool bIsWaitngToDelete = false;
-	//Bind resources to memory and prepare for drawing.
-	virtual void Initialize();
-	//Drawing procedure.
-	virtual void Draw();
+
 	//All things that should be happen before actual object destroy should be here.
 	virtual void OnDestroy() {};
 
-
+	glm::mat4 MVP = glm::mat4(1.0f);
 	glm::mat4 ProjectionMat = glm::ortho(0.f, 1280.f, 0.f, 820.0f, -1.0f, 1.0f);
 	glm::mat4 VievMat = glm::translate(glm::mat4(1.0f), glm::vec3(0.f, 0.f, 0.f));
 

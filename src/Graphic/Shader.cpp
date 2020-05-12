@@ -8,6 +8,7 @@
 #include "ErrorManager.h"
 
 
+std::unordered_map<std::string, ShaderProgramSource> Shader::m_FilePathCache = {};
 
 Shader::Shader(const std::string& filepath)
 	: m_FilePath(filepath), m_RendererID(0) 
@@ -33,23 +34,24 @@ void Shader::Unbind() const
 
 void Shader::SetUniform1i(const std::string& name, int i0)
 {
-	GLCall(glUniform1i(GetUniformLocation(name), i0));
-
+	GLint location = GetUniformLocation(name);
+	GLCall(glUniform1i(location, i0));
 }
 
 void Shader::SetUniform4f(const std::string& name, float f0, float f1, float f2, float f3)
 {
-	GLCall(glUniform4f(GetUniformLocation(name), f0, f1, f2, f3));
+	GLint location = GetUniformLocation(name);
+	GLCall(glUniform4f(location, f0, f1, f2, f3));
 }
 
 void Shader::SetUniformMat4f(const std::string& name, const glm::mat4 matrix)
 {
+	GLint location = GetUniformLocation(name);
 	GLCall(glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &matrix[0][0]));
 }
 
 int Shader::GetUniformLocation(const std::string& name)
 {
-
 	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
 		return m_UniformLocationCache[name];
 
@@ -67,6 +69,8 @@ int Shader::GetUniformLocation(const std::string& name)
 
 ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 {
+	if (m_FilePathCache.find(filepath) != m_FilePathCache.end())
+		return m_FilePathCache[filepath];
 
 	enum class EShaderType
 	{
@@ -74,7 +78,6 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 		VERTEX = 0,
 		FRAGMENT = 1
 	};
-
 
 	std::ifstream stream(filepath);
 	std::string line;
@@ -101,11 +104,14 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 		}
 	}
 
+	m_FilePathCache[filepath] = { ss[0].str(), ss[1].str() };
+
 	return { ss[0].str(), ss[1].str() };
 }
 
  unsigned int Shader::CompileShader(unsigned int type, const std::string& source)
 {
+
 	unsigned int id = glCreateShader(type);
 	const char* src = source.c_str();
 	GLCall(glShaderSource(id, 1, &src, nullptr));
@@ -118,7 +124,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 	{
 		int lenght;
 		GLCall(glGetShaderiv(id, GL_INFO_LOG_LENGTH, &lenght));
-		char* message = (char*)alloca(lenght * sizeof(char));
+		char* message = (char*)_malloca(lenght * sizeof(char));
 		GLCall(glGetShaderInfoLog(id, lenght, &lenght, message));
 		std::cout << "Failed to compile " << (type == GL_VERTEX_SHADER ? "vertex" : "fragment") << " shader!" << std::endl;
 
@@ -127,6 +133,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 		GLCall(glDeleteShader(id));
 		return 0;
 	}
+
 
 	return id;
 }

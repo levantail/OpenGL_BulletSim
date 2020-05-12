@@ -18,6 +18,8 @@ private:
 	unsigned int m_RendererID = 0;
 	std::unordered_map<std::string, int> m_UniformLocationCache = {};
 
+	static std::unordered_map<std::string, ShaderProgramSource> m_FilePathCache;
+
 public:
 	Shader() {};
 	Shader(const std::string& filepath);

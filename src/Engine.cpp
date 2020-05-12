@@ -2,6 +2,8 @@
 
 bool Engine::Initialize(std::string WindowTitle, int WindowWidth, int Window_Height)
 {
+	// During init, enable debug output
+
 
 	if (!GLRenderWindow.Initialize(WindowTitle, WindowWidth, Window_Height)) 
 	{
@@ -16,6 +18,9 @@ bool Engine::Initialize(std::string WindowTitle, int WindowWidth, int Window_Hei
 		std::cout << "Failed to initialize graphic" << std::endl;
 		return false;
 	}
+
+	//glEnable(GL_DEBUG_OUTPUT);
+	//glDebugMessageCallback(MessageCallback, 0);
 
 	return true;
 }

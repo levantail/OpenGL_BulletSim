@@ -9,14 +9,8 @@ Actor::Actor(glm::vec3 Location, glm::vec3 Rotation, glm::vec3 Scale) :
 {
 }
 
-void Actor::Draw()
+void Actor::Tick(float DeltaTime)
 {
-	if (isInitilized == false)
-	{
-		isInitilized = true;
-		Initialize();
-	}
-
 	glm::quat myquaternion = glm::quat(glm::radians(Transform.Rotation));
 
 	glm::mat4 TranslationMatrix = translate(glm::mat4(1.0f), Transform.Location);
@@ -25,15 +19,23 @@ void Actor::Draw()
 
 	glm::mat4 ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
 
-	glm::mat4 MVP = ProjectionMat * VievMat * ModelMatrix;
+	MVP = ProjectionMat * VievMat * ModelMatrix;
+	Transform_PrevFrame = Transform;
+
+}
+
+void Actor::Draw()
+{
+	//if (isInitilized == false)
+	//{
+	//	isInitilized = true;
+	//	Initialize();
+	//}
 
 	shader->Bind();
 	shader->SetUniformMat4f("u_MVP", MVP);
 	
 	Renderer::Draw(*va, *ib, *shader);
-	
-
-	Transform_PrevFrame = Transform;
 }
 
 void Actor::Initialize()
@@ -51,16 +53,17 @@ void Actor::Initialize()
 
 
 	shader = std::make_unique<Shader>("res/shaders/Basic.shader");
-	shader->Bind();
+//	shader->Bind();
 
-	texture = std::make_unique<Texture> ("res/textures/test.png");
-	texture->Bind();
+	//texture = std::make_unique<Texture> ("res/textures/test.png");
+
+	//texture->Bind();
 	//shader->SetUniform1i("u_Texture", 0);
 
-	shader->Unbind();
-	va->Unbind();
-	vb->Unbind();
-	ib->Unbind();
+	//shader->Unbind();
+	//va->Unbind();
+	//vb->Unbind();
+	//ib->Unbind();
 
 	// Object bounds calculation
 	// First 2 floats stands for x and y vertices respectively
