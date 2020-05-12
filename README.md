@@ -13,3 +13,6 @@ Every bullet upon spawn has randomized properties, such as:
 - Speed
 
 Every wall has randomized only rotation and location, but coud be simply extended.
+
+UPD:
+Simple Multhithread Pool added to increase performance.
