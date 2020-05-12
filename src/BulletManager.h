@@ -12,9 +12,18 @@
 #include "Graphic/Actors/Wall.h"
 #include "Graphic/Actors/HelperManager.h"
 
+#include "ThreadManager.h"
+
+//#include <random>
+
+
 class BulletManager
 {
 public:
+	BulletManager() {
+
+		threadsPool = std::make_unique<ThreadManager>();
+	};
 
 	void Update(float time);
 
@@ -23,15 +32,19 @@ public:
 
 	void SetWindowSize(int Width, int Height) { W_WIDTH = (float)Width; W_HEIGHT = (float)Height; };
 private:
+	void DrawObjects();
+
+	void TickWallMT(std::shared_ptr<Wall>& singleWall, float time);
+	void TickBulletMT(std::shared_ptr<Bullet>& singleBullet, float time);
 
 	float W_WIDTH = 0;
 	float W_HEIGHT = 0 ;
 
-
-	//Wall object generation properties
+	//void simplejob();
 	int WallMaxAmount = 100;
 	float WallSpawnRate = 1.0f;
 	int WallSpawnAmount = 10;
+
 	//Cache used for next frame object generation
 	//In case if all values will be pretty small 
 	//and framerate big
@@ -47,14 +60,17 @@ private:
 
 	//Buffers for walls and bullets objects
 	//Both could be stored as Actor and then downcast to desired obj.
-	std::vector<std::unique_ptr<Wall>> BufferWalls = {};
-	std::vector<std::unique_ptr<Bullet>> BufferBullets = {};
+	std::vector<std::shared_ptr<Wall>> BufferWalls = {};
+	std::vector<std::shared_ptr<Bullet>> BufferBullets = {};
+
+	//Thread Pool
+	std::unique_ptr<ThreadManager> threadsPool;
 
 	//Checks every bullet for collisions with any wall or window edge
 	//If it true - reflect according to situation:
 	// case window: inverse x or y direction depending on where obj cross a border
 	// case wall: reflect bullet depending on his direction vector and wall rotation
-	void CalculateCollisions();
+	void CalculateCollisions(std::shared_ptr<Bullet>& singleBullet);
 
 	//Simply generate some amount of objects every frame.
 	//Used imgui interface to adjust parameters
@@ -63,4 +79,7 @@ private:
 
 	void DrawUI();
 
+	std::mutex mu1;
+	std::mutex mu2;
+	std::mutex mu3;
 };

@@ -13,10 +13,10 @@ public:
 	void SetTimeToSpawn(float newTimeToSpawn);
 
 	void Tick(float DeltaTime) override;
-
+	void Draw() override;
 	void FaceDirection();
 private:
-
+	bool bIsReadyToDraw = false;
 	float TimeToSpawn = 2.0f;
 	float LifeTime = 10.0f;
 

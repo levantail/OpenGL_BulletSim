@@ -20,16 +20,10 @@ Bullet::Bullet(glm::vec3 Location, glm::vec3 Rotation, glm::vec3 Scale) : Actor(
 	};
 }
 
-//Bullet::Actor()
-//{
-//
-//}
-
 void Bullet::SetVelocity(float newVelocity)
 {
 	this->Velocity = newVelocity;
 }
-
 
 void Bullet::SetLifeTime(float newLifeTime)
 {
@@ -46,24 +40,35 @@ void Bullet::Tick(float DeltaTime)
 	//Check is time to 'spawn'.
 	if (TimeToSpawn > 0)
 	{
-		TimeToSpawn -= DeltaTime::Get();
+		TimeToSpawn -= DeltaTime;
 		return;
+	}
+	else
+	{
+		bIsReadyToDraw = true;
 	}
 
 	if (LifeTime > 0)
 	{
-		LifeTime -= DeltaTime::Get();
+		LifeTime -= DeltaTime;
 	}
 	else
 	{
 		Destroy();
 		return;
 	}
-	__super::Tick(DeltaTime);
 
 	//Movement
 
-	Transform.Location +=  Direction * (Velocity * DeltaTime::Get());
+	Transform.Location +=  Direction * (Velocity * DeltaTime);
+
+	__super::Tick(DeltaTime);
+}
+
+void Bullet::Draw()
+{
+	if (bIsReadyToDraw == true)
+		__super::Draw();
 }
 
 void Bullet::FaceDirection()
