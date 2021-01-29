@@ -1,4 +1,4 @@
-# OpenGL_BulletSim
+# OpenGL_BulletSim (OUT OF DATE)
 
 Bullet simulation with reflections from walls. Implemented in pure C++ using OpenGL, glew and glm math library.
 
